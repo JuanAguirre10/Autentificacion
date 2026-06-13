@@ -10,8 +10,15 @@ const loginAttempts = new Map<string, { count: number; lastAttempt: number }>();
 const MAX_ATTEMPTS = 3;
 const LOCK_TIME = 30 * 1000;
 
+function getUsersPath() {
+  // Vercel filesystem is read-only; /tmp is writable but ephemeral
+  return process.env.NODE_ENV === "production"
+    ? "/tmp/users.json"
+    : path.join(process.cwd(), "data", "users.json");
+}
+
 function getUsers() {
-  const usersPath = path.join(process.cwd(), "data", "users.json");
+  const usersPath = getUsersPath();
   if (!fs.existsSync(usersPath)) return [];
   return JSON.parse(fs.readFileSync(usersPath, "utf-8"));
 }

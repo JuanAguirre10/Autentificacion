@@ -3,14 +3,20 @@ import bcrypt from "bcryptjs";
 import fs from "fs";
 import path from "path";
 
+function getUsersPath() {
+  return process.env.NODE_ENV === "production"
+    ? "/tmp/users.json"
+    : path.join(process.cwd(), "data", "users.json");
+}
+
 function getUsers() {
-  const usersPath = path.join(process.cwd(), "data", "users.json");
+  const usersPath = getUsersPath();
   if (!fs.existsSync(usersPath)) return [];
   return JSON.parse(fs.readFileSync(usersPath, "utf-8"));
 }
 
 function saveUsers(users: object[]) {
-  const usersPath = path.join(process.cwd(), "data", "users.json");
+  const usersPath = getUsersPath();
   fs.mkdirSync(path.dirname(usersPath), { recursive: true });
   fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
 }
