@@ -1,13 +1,11 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,20 +16,27 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
+      setLoading(false);
 
-    if (result?.error === 'AccountLocked') {
-      setError('Cuenta bloqueada por demasiados intentos. Espera 30 segundos.');
-    } else if (result?.error) {
-      setError('Email o contraseña incorrectos.');
-    } else if (result?.ok) {
-      router.push('/dashboard');
+      if (result?.error === 'AccountLocked') {
+        setError('Cuenta bloqueada por demasiados intentos. Espera 30 segundos.');
+      } else if (result?.error) {
+        setError('Email o contraseña incorrectos.');
+      } else if (result?.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        setError('Error inesperado. Intenta de nuevo.');
+      }
+    } catch {
+      setLoading(false);
+      setError('Error de conexión. Intenta de nuevo.');
     }
   };
 
