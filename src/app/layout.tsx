@@ -5,7 +5,6 @@ import Link from "next/link";
 import LogoutButton from "../components/LogoutButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Image from "next/image";
 import Provider from "@/components/SessionProvider";
 
 const geistSans = Geist({
@@ -56,17 +55,7 @@ export default async function RootLayout({
                 </Link>
               )}
 
-              {session?.user?.image && (
-                <Image
-                  height={32}
-                  width={32}
-                  src={session.user.image}
-                  alt="Avatar"
-                  className="w-8 h-8 rounded-full ring-2 ring-indigo-100 ml-1"
-                />
-              )}
-
-              {session?.user && <LogoutButton />}
+{session?.user && <LogoutButton />}
 
               {!session?.user && (
                 <Link
