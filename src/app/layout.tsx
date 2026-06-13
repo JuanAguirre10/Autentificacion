@@ -29,50 +29,57 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
-  console.log(session);
 
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <nav className="w-full bg-black shadow-sm">
-          <div className="mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-semibold">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}>
+        <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+            <Link href="/" className="text-lg font-semibold text-indigo-600 tracking-tight">
               MyAuthApp
             </Link>
-            <ul className="flex items-center justify-center gap-6 text-sm">
-              <li>
-                <Link href="/dashboard" className="hover:text-gray-600">
-                  Dashboard
+
+            <nav className="flex items-center gap-2">
+              <Link
+                href="/dashboard"
+                className="text-sm text-gray-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+              >
+                Dashboard
+              </Link>
+
+              {session?.user && (
+                <Link
+                  href="/profile"
+                  className="text-sm text-gray-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+                >
+                  Perfil
                 </Link>
-              </li>
-              {session?.user && (
-                <li>
-                  <Link href="/profile" className="hover:text-gray-600">
-                    Profile
-                  </Link>
-                </li>
               )}
-              {session?.user && (
-                <li>
-                  <LogoutButton />
-                </li>
-              )}
+
               {session?.user?.image && (
-                <li>
-                  <Image
-                    height={100}
-                    width={100}
-                    src={session?.user?.image}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full"
-                  />
-                </li>
+                <Image
+                  height={32}
+                  width={32}
+                  src={session.user.image}
+                  alt="Avatar"
+                  className="w-8 h-8 rounded-full ring-2 ring-indigo-100 ml-1"
+                />
               )}
-            </ul>
+
+              {session?.user && <LogoutButton />}
+
+              {!session?.user && (
+                <Link
+                  href="/signIn"
+                  className="text-sm bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Iniciar Sesión
+                </Link>
+              )}
+            </nav>
           </div>
-        </nav>
+        </header>
+
         <Provider>
           <main>{children}</main>
         </Provider>
